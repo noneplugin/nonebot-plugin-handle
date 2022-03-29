@@ -20,6 +20,8 @@ pip install nonebot_plugin_handle
 
 ### 使用
 
+**以下命令需要加[命令前缀](https://v2.nonebot.dev/docs/api/config#Config-command_start) (默认为`/`)，可自行设置为空**
+
 ```
 @机器人 + 猜成语
 ```
