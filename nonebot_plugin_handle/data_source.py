@@ -22,7 +22,8 @@ class Handle:
         self.length = 4
         self.hint_num = random.randint(0, self.length - 1)
         self.times: int = 10  # 可猜次数
-        self.guessed: List[str] = []  # 记录已猜成语
+        self.guessed_idiom: List[str] = []  # 记录已猜成语
+        self.guessed_pinyin: List[List[Tuple[str, str, str]]] = []  # 记录已猜成语的拼音
 
         self.block_size = (160, 160)  # 文字块尺寸
         self.block_padding = (20, 20)  # 文字块之间间距
@@ -43,12 +44,13 @@ class Handle:
         self.font_color = "#FFFFFF"  # 文字颜色
 
     def guess(self, idiom: str) -> Optional[GuessResult]:
-        if idiom in self.guessed:
+        if idiom in self.guessed_idiom:
             return GuessResult.DUPLICATE
-        self.guessed.append(idiom)
+        self.guessed_idiom.append(idiom)
+        self.guessed_pinyin.append(get_pinyin(idiom))
         if idiom == self.idiom:
             return GuessResult.WIN
-        if len(self.guessed) == self.times:
+        if len(self.guessed_idiom) == self.times:
             return GuessResult.LOSS
 
     def draw_block(
@@ -93,7 +95,7 @@ class Handle:
         return block
 
     def draw(self) -> BytesIO:
-        rows = min(len(self.guessed) + 1, self.times)
+        rows = min(len(self.guessed_idiom) + 1, self.times)
         board_w = self.length * self.block_size[0]
         board_w += (self.length - 1) * self.block_padding[0] + 2 * self.padding[0]
         board_h = rows * self.block_size[1]
@@ -110,8 +112,8 @@ class Handle:
                 return self.wrong_color
 
         for i in range(rows):
-            idiom = self.guessed[i] if len(self.guessed) > i else ""
-            pinyin = get_pinyin(idiom) if idiom else []
+            idiom = self.guessed_idiom[i] if len(self.guessed_idiom) > i else ""
+            pinyin = self.guessed_pinyin[i] if len(self.guessed_pinyin) > i else []
             for j in range(self.length):
                 char = idiom[j] if idiom else ""
                 if not char:

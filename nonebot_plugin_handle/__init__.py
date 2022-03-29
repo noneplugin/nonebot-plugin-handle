@@ -124,7 +124,7 @@ async def stop_game(matcher: Matcher, cid: str):
     if games.get(cid, None):
         game = games.pop(cid)
         msg = "猜成语超时，游戏结束"
-        if len(game.guessed) >= 1:
+        if len(game.guessed_idiom) >= 1:
             msg += f"\n{game.result}"
         await matcher.finish(msg)
 
@@ -172,7 +172,7 @@ async def handle_handle(matcher: Matcher, event: MessageEvent, argv: List[str]):
     if options.stop:
         game = games.pop(cid)
         msg = "游戏已结束"
-        if len(game.guessed) >= 1:
+        if len(game.guessed_idiom) >= 1:
             msg += f"\n{game.result}"
         await send(msg)
 

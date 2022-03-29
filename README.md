@@ -54,3 +54,4 @@ handle [--hint] [--stop] [idiom]
 ### 特别感谢
 
 - [antfu/handle](https://github.com/antfu/handle) A Chinese Hanzi variation of Wordle - 汉字 Wordle
+- [AllanChain/chinese-wordle](https://github.com/AllanChain/chinese-wordle) Chinese idiom wordle game | 仿 wordle 的拼成语游戏
