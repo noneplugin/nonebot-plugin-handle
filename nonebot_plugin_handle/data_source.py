@@ -20,7 +20,6 @@ class Handle:
         self.result = f"答案为：{idiom}"
         self.pinyin: List[Tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
         self.length = 4
-        self.hint_num = random.randint(0, self.length - 1)
         self.times: int = 10  # 可猜次数
         self.guessed_idiom: List[str] = []  # 记录已猜成语
         self.guessed_pinyin: List[List[Tuple[str, str, str]]] = []  # 记录已猜成语的拼音
@@ -139,15 +138,44 @@ class Handle:
         return save_jpg(board)
 
     def draw_hint(self) -> BytesIO:
-        board_w = self.block_size[0] + 2 * self.padding[0]
+        guessed_char = set("".join(self.guessed_idiom))
+        guessed_initial = set()
+        guessed_final = set()
+        guessed_tone = set()
+        for pinyin in self.guessed_pinyin:
+            for p in pinyin:
+                guessed_initial.add(p[0])
+                guessed_final.add(p[1])
+                guessed_tone.add(p[2])
+
+        board_w = self.length * self.block_size[0]
+        board_w += (self.length - 1) * self.block_padding[0] + 2 * self.padding[0]
         board_h = self.block_size[1] + 2 * self.padding[1]
-        board_size = (board_w, board_h)
-        board = Image.new("RGB", board_size, self.bg_color)
-        char = self.idiom[self.hint_num]
-        i, f, t = self.pinyin[self.hint_num]
-        char_c = initial_c = final_c = tone_c = self.border_color
-        block = self.draw_block(
-            self.bg_color, char, char_c, i, initial_c, f, final_c, t, tone_c
-        )
-        board.paste(block, (self.padding[0], self.padding[1]))
+        board = Image.new("RGB", (board_w, board_h), self.bg_color)
+
+        for i in range(self.length):
+            char = self.idiom[i]
+            hi, hf, ht = self.pinyin[i]
+            color = char_c = initial_c = final_c = tone_c = self.correct_color
+            if char not in guessed_char:
+                char = "?"
+                color = self.bg_color
+                char_c = self.wrong_color
+            else:
+                char_c = initial_c = final_c = tone_c = self.bg_color
+            if hi not in guessed_initial:
+                hi = "?"
+                initial_c = self.wrong_color
+            if hf not in guessed_final:
+                hf = "?"
+                final_c = self.wrong_color
+            if ht not in guessed_tone:
+                ht = "?"
+                tone_c = self.wrong_color
+            block = self.draw_block(
+                color, char, char_c, hi, initial_c, hf, final_c, ht, tone_c
+            )
+            x = self.padding[0] + (self.block_size[0] + self.block_padding[0]) * i
+            y = self.padding[1]
+            board.paste(block, (x, y))
         return save_jpg(board)
