@@ -109,7 +109,7 @@ shortcut("结束", ["--stop"], aliases={"停", "停止游戏", "结束游戏"}, 
 
 
 idiom_matcher = on_message(
-    Rule(game_running) & get_idiom_input, block=True, priority=12
+    Rule(game_running) & get_idiom_input, block=True, priority=14
 )
 
 
