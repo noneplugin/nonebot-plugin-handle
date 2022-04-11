@@ -105,7 +105,7 @@ def shortcut(cmd: str, argv: List[str] = [], **kwargs):
 
 shortcut("猜成语", rule=to_me())
 shortcut("提示", ["--hint"], aliases={"给个提示"}, rule=game_running)
-shortcut("结束", ["--stop"], aliases={"停", "停止游戏", "结束游戏"}, rule=game_running)
+shortcut("结束", ["--stop"], aliases={"停止游戏", "结束游戏"}, rule=game_running)
 
 
 idiom_matcher = on_message(
