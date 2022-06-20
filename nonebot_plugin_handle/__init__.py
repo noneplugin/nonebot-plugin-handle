@@ -2,13 +2,14 @@ import re
 import shlex
 import asyncio
 from io import BytesIO
-from dataclasses import dataclass
 from asyncio import TimerHandle
+from dataclasses import dataclass
 from typing import Dict, List, Optional, NoReturn
 
+from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.exception import ParserExit
-from nonebot.typing import T_State
+from nonebot.plugin import PluginMetadata
 from nonebot.rule import Rule, to_me, ArgumentParser
 from nonebot import on_command, on_shell_command, on_message
 from nonebot.params import ShellCommandArgv, CommandArg, EventPlainText, State
@@ -19,26 +20,28 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
 )
 
-from .data_source import Handle, GuessResult
 from .utils import random_idiom
+from .data_source import Handle, GuessResult
 
-
-__help__plugin_name__ = "handle"
-__des__ = "汉字Wordle 猜成语"
-__cmd__ = f"""
-@我 + “猜成语”开始游戏；
-你有十次的机会猜一个四字词语；
-每次猜测后，汉字与拼音的颜色将会标识其与正确答案的区别；
-青色 表示其出现在答案中且在正确的位置；
-橙色 表示其出现在答案中但不在正确的位置；
-当四个格子都为青色时，你便赢得了游戏！
-可发送“结束”结束游戏；可发送“提示”查看提示。
-""".strip()
-__short_cmd__ = "@我 猜成语"
-__example__ = """
-@小Q 猜成语
-""".strip()
-__usage__ = f"{__des__}\n\nUsage:\n{__cmd__}\n\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="猜成语",
+    description="汉字Wordle 猜成语",
+    usage=(
+        "@我 + “猜成语”开始游戏；"
+        "你有十次的机会猜一个四字词语；"
+        "每次猜测后，汉字与拼音的颜色将会标识其与正确答案的区别；"
+        "青色 表示其出现在答案中且在正确的位置；"
+        "橙色 表示其出现在答案中但不在正确的位置；"
+        "当四个格子都为青色时，你便赢得了游戏！"
+        "可发送“结束”结束游戏；可发送“提示”查看提示。"
+    ),
+    extra={
+        "unique_name": "handle",
+        "example": "@小Q 猜成语",
+        "author": "meetwq <meetwq@gmail.com>",
+        "version": "0.1.3",
+    },
+)
 
 
 parser = ArgumentParser("handle", description="猜成语")
@@ -157,7 +160,7 @@ async def handle_handle(matcher: Matcher, event: MessageEvent, argv: List[str]):
         args = parser.parse_args(argv)
     except ParserExit as e:
         if e.status == 0:
-            await send(__usage__)
+            await send(__plugin_meta__.usage)
         await send()
 
     options = Options(**vars(args))
