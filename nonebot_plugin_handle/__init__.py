@@ -39,7 +39,7 @@ __plugin_meta__ = PluginMetadata(
         "unique_name": "handle",
         "example": "@小Q 猜成语",
         "author": "meetwq <meetwq@gmail.com>",
-        "version": "0.1.4",
+        "version": "0.1.5",
     },
 )
 
@@ -200,6 +200,6 @@ async def handle_handle(matcher: Matcher, event: MessageEvent, argv: List[str]):
     elif result == GuessResult.DUPLICATE:
         await send("你已经猜过这个成语了呢")
     elif result == GuessResult.ILLEGAL:
-        await send(f"你确定 {idiom} 是一个成语吗？")
+        await send(f"你确定“{idiom}”是个成语吗？")
     else:
         await send(image=game.draw())

@@ -49,7 +49,7 @@ handle [--hint] [--stop] [idiom]
 ### 示例
 
 <div align="left">
-  <img src="https://s2.loli.net/2022/03/29/MVrKPdR2i9sQSfm.png" width="400" />
+  <img src="https://s2.loli.net/2022/07/10/1Q3UqfCLN42JA7V.png" width="400" />
 </div>
 
 

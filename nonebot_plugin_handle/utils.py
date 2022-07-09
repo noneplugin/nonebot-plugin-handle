@@ -16,7 +16,7 @@ idiom_use_path = data_dir / "idioms_common_use.txt"
 
 def legal_idiom(word: str) -> bool:
     with idiom_path.open("r", encoding="utf-8") as f:
-        return word in f.readlines()
+        return word in (idiom.strip() for idiom in f.readlines())
 
 
 def random_idiom() -> str:
