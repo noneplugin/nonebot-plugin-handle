@@ -11,10 +11,16 @@ resource_dir = Path(__file__).parent / "resources"
 fonts_dir = resource_dir / "fonts"
 data_dir = resource_dir / "data"
 idiom_path = data_dir / "idioms.txt"
+idiom_use_path = data_dir / "idioms_common_use.txt"
+
+
+def legal_idiom(word: str) -> bool:
+    with idiom_path.open("r", encoding="utf-8") as f:
+        return word in f.readlines()
 
 
 def random_idiom() -> str:
-    with idiom_path.open("r", encoding="utf-8") as f:
+    with idiom_use_path.open("r", encoding="utf-8") as f:
         return random.choice(f.readlines()).strip()
 
 

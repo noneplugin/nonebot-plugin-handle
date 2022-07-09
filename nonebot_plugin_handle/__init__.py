@@ -199,5 +199,7 @@ async def handle_handle(matcher: Matcher, event: MessageEvent, argv: List[str]):
         )
     elif result == GuessResult.DUPLICATE:
         await send("你已经猜过这个成语了呢")
+    elif result == GuessResult.ILLEGAL:
+        await send(f"你确定 {idiom} 是一个成语吗？")
     else:
         await send(image=game.draw())
