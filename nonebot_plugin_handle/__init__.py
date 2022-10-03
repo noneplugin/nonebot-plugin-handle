@@ -12,7 +12,7 @@ from nonebot.exception import ParserExit
 from nonebot.plugin import PluginMetadata
 from nonebot.rule import Rule, to_me, ArgumentParser
 from nonebot import on_command, on_shell_command, on_message
-from nonebot.params import ShellCommandArgv, CommandArg, EventPlainText, State
+from nonebot.params import ShellCommandArgv, CommandArg, EventPlainText
 from nonebot.adapters.onebot.v11 import (
     MessageEvent,
     GroupMessageEvent,
@@ -39,7 +39,7 @@ __plugin_meta__ = PluginMetadata(
         "unique_name": "handle",
         "example": "@小Q 猜成语",
         "author": "meetwq <meetwq@gmail.com>",
-        "version": "0.1.5",
+        "version": "0.1.6",
     },
 )
 
@@ -87,7 +87,7 @@ def match_idiom(msg: str) -> bool:
     return bool(re.fullmatch(r"[\u4e00-\u9fa5]{4}", msg))
 
 
-def get_idiom_input(state: T_State = State(), msg: str = EventPlainText()) -> bool:
+def get_idiom_input(state: T_State, msg: str = EventPlainText()) -> bool:
     if match_idiom(msg):
         state["idiom"] = msg
         return True
@@ -117,7 +117,7 @@ idiom_matcher = on_message(
 
 
 @idiom_matcher.handle()
-async def _(matcher: Matcher, event: MessageEvent, state: T_State = State()):
+async def _(matcher: Matcher, event: MessageEvent, state: T_State):
     idiom: str = state["idiom"]
     await handle_handle(matcher, event, [idiom])
 

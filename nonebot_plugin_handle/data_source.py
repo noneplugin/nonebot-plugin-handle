@@ -1,4 +1,3 @@
-import random
 from enum import Enum
 from io import BytesIO
 from PIL import Image, ImageDraw
