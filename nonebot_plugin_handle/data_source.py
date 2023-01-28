@@ -29,11 +29,11 @@ class Handle:
         self.padding = (40, 40)  # 边界间距
         self.border_width = 4  # 边框宽度
         font_size_char = 60  # 汉字字体大小
-        font_size_pinyin = 36  # 拼音字体大小
-        font_size_tone = 24  # 声调字体大小
-        self.font_char = load_font("SourceHanSerifSC-Regular.otf", font_size_char)
-        self.font_pinyin = load_font("Consolas.ttf", font_size_pinyin)
-        self.font_tone = load_font("Consolas.ttf", font_size_tone)
+        font_size_pinyin = 30  # 拼音字体大小
+        font_size_tone = 22  # 声调字体大小
+        self.font_char = load_font("NotoSerifSC-Regular.otf", font_size_char)
+        self.font_pinyin = load_font("NotoSansMono-Regular.ttf", font_size_pinyin)
+        self.font_tone = load_font("NotoSansMono-Regular.ttf", font_size_tone)
 
         self.correct_color = "#1d9c9c"  # 存在且位置正确时的颜色
         self.exist_color = "#de7525"  # 存在但位置不正确时的颜色
@@ -83,7 +83,7 @@ class Handle:
 
         py_size = self.font_pinyin.getsize(initial + final)
         x = (self.block_size[0] - py_size[0]) / 2
-        y = self.block_size[0] / 6
+        y = self.block_size[0] / 8
         draw.text((x, y), initial, font=self.font_pinyin, fill=initial_color)
         x += self.font_pinyin.getsize(initial)[0]
         draw.text((x, y), final, font=self.font_pinyin, fill=final_color)
