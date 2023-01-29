@@ -63,7 +63,7 @@ parser = ArgumentParser("handle", description="猜成语")
 parser.add_argument("--hint", action="store_true", help="提示")
 parser.add_argument("--stop", action="store_true", help="结束游戏")
 parser.add_argument("--strict", action="store_true", help="严格模式，即判断是否是成语")
-parser.add_argument("idiom", nargs="?", help="成语")
+parser.add_argument("idiom", nargs="?", type=str, default="", help="成语")
 
 
 @dataclass
