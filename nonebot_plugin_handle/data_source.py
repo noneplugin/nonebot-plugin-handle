@@ -15,9 +15,10 @@ class GuessResult(Enum):
 
 
 class Handle:
-    def __init__(self, idiom: str):
+    def __init__(self, idiom: str, explanation: str):
         self.idiom: str = idiom  # 成语
-        self.result = f"答案为：{idiom}"
+        self.explanation: str = explanation  # 释义
+        self.result = f"【成语】：{idiom}\n【释义】：{explanation}"
         self.pinyin: List[Tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
         self.length = 4
         self.times: int = 10  # 可猜次数

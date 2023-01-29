@@ -1,7 +1,8 @@
+import json
 import random
 from io import BytesIO
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Dict, Tuple
 from pypinyin import pinyin, Style
 from PIL import ImageFont
 from PIL.Image import Image as IMG
@@ -11,7 +12,7 @@ resource_dir = Path(__file__).parent / "resources"
 fonts_dir = resource_dir / "fonts"
 data_dir = resource_dir / "data"
 idiom_path = data_dir / "idioms.txt"
-idiom_use_path = data_dir / "idioms_common_use.txt"
+answer_path = data_dir / "answers.json"
 
 
 def legal_idiom(word: str) -> bool:
@@ -19,9 +20,11 @@ def legal_idiom(word: str) -> bool:
         return word in (idiom.strip() for idiom in f.readlines())
 
 
-def random_idiom() -> str:
-    with idiom_use_path.open("r", encoding="utf-8") as f:
-        return random.choice(f.readlines()).strip()
+def random_idiom() -> Tuple[str, str]:
+    with answer_path.open("r", encoding="utf-8") as f:
+        answers: List[Dict[str, str]] = json.load(f)
+        answer = random.choice(answers)
+        return answer["word"], answer["explanation"]
 
 
 # fmt: off

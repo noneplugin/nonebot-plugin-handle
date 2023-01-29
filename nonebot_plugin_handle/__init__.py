@@ -225,7 +225,7 @@ async def handle_handle(
 
     cid = get_cid(bot, event)
     if not games.get(cid, None):
-        game = Handle(random_idiom())
+        game = Handle(*random_idiom())
         games[cid] = game
         set_timeout(matcher, cid)
         await send(f"你有{game.times}次机会猜一个四字成语，请发送成语", game.draw())
