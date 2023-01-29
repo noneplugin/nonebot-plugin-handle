@@ -34,22 +34,30 @@ pip install nonebot_plugin_handle
 
 橙色 表示其出现在答案中但不在正确的位置；
 
+每个格子的 汉字、声母、韵母、声调 都会独立进行颜色的指示。
+
 当四个格子都为青色时，你便赢得了游戏！
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
+
+使用 --strict 选项开启成语检查，即猜测的短语必须是成语，如：
+
+```
+@机器人 猜成语 --strict
+```
 
 
 或使用 `handle` 指令：
 
 ```
-handle [--hint] [--stop] [idiom]
+handle [--hint] [--stop] [--strict] [idiom]
 ```
 
 
 ### 示例
 
 <div align="left">
-  <img src="https://s2.loli.net/2022/07/10/1Q3UqfCLN42JA7V.png" width="400" />
+  <img src="https://s2.loli.net/2023/01/29/SplDtuFNQaKvEHR.png" width="400" />
 </div>
 
 
