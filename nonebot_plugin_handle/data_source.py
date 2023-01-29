@@ -83,11 +83,17 @@ class Handle:
         y = (self.block_size[1] - char_size[1]) / 5 * 3
         draw.text((x, y), char, font=self.font_char, fill=char_color)
 
+        space = 5
+        need_space = bool(initial and final)
         py_size = self.font_pinyin.getsize(initial + final)
+        if need_space:
+            py_size = (py_size[0] + space, py_size[1])
         x = (self.block_size[0] - py_size[0]) / 2
         y = self.block_size[0] / 8
         draw.text((x, y), initial, font=self.font_pinyin, fill=initial_color)
         x += self.font_pinyin.getsize(initial)[0]
+        if need_space:
+            x += space
         draw.text((x, y), final, font=self.font_pinyin, fill=final_color)
 
         tone_size = self.font_tone.getsize(tone)
