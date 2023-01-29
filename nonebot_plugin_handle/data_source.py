@@ -15,9 +15,10 @@ class GuessResult(Enum):
 
 
 class Handle:
-    def __init__(self, idiom: str, explanation: str):
+    def __init__(self, idiom: str, explanation: str, strict: bool = False):
         self.idiom: str = idiom  # 成语
         self.explanation: str = explanation  # 释义
+        self.strict: bool = strict  # 是否判断输入词语为成语
         self.result = f"【成语】：{idiom}\n【释义】：{explanation}"
         self.pinyin: List[Tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
         self.length = 4
@@ -44,7 +45,7 @@ class Handle:
         self.font_color = "#FFFFFF"  # 文字颜色
 
     def guess(self, idiom: str) -> Optional[GuessResult]:
-        if not legal_idiom(idiom):
+        if self.strict and not legal_idiom(idiom):
             return GuessResult.ILLEGAL
         if idiom in self.guessed_idiom:
             return GuessResult.DUPLICATE
