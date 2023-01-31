@@ -208,7 +208,7 @@ async def handle_handle(
             msg = V12Msg()
             if image:
                 resp = await bot.upload_file(
-                    type="data", name="wordle", data=image.getvalue()
+                    type="data", name="handle", data=image.getvalue()
                 )
                 file_id = resp["file_id"]
                 msg.append(V12MsgSeg.image(file_id))
