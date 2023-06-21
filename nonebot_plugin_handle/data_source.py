@@ -1,10 +1,11 @@
 from enum import Enum
 from io import BytesIO
+from typing import Iterable, List, Optional, Tuple
+
 from PIL import Image, ImageDraw
 from PIL.Image import Image as IMG
-from typing import Iterable, Tuple, List, Optional
 
-from .utils import get_pinyin, load_font, save_jpg, legal_idiom
+from .utils import get_pinyin, legal_idiom, load_font, save_jpg
 
 
 class GuessResult(Enum):

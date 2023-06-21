@@ -2,11 +2,12 @@ import json
 import random
 from io import BytesIO
 from pathlib import Path
-from typing import List, Dict, Tuple
-from pypinyin import pinyin, Style
+from typing import Dict, List, Tuple
+
 from PIL import ImageFont
 from PIL.Image import Image as IMG
 from PIL.ImageFont import FreeTypeFont
+from pypinyin import Style, pinyin
 
 resource_dir = Path(__file__).parent / "resources"
 fonts_dir = resource_dir / "fonts"

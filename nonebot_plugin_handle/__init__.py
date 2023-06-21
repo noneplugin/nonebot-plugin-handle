@@ -1,40 +1,43 @@
+import asyncio
 import re
 import shlex
-import asyncio
-from io import BytesIO
 from asyncio import TimerHandle
 from dataclasses import dataclass
-from typing import Dict, List, Optional, NoReturn, Union
+from io import BytesIO
+from typing import Dict, List, NoReturn, Optional
 
-from nonebot.typing import T_State
-from nonebot.matcher import Matcher
+from nonebot import on_command, on_message, on_shell_command, require
+from nonebot.adapters import Bot, Event, Message
 from nonebot.exception import ParserExit
-from nonebot.plugin import PluginMetadata
-from nonebot.rule import Rule, ArgumentParser
-from nonebot import on_command, on_shell_command, on_message
+from nonebot.matcher import Matcher
 from nonebot.params import (
-    ShellCommandArgv,
     CommandArg,
     CommandStart,
     EventPlainText,
     EventToMe,
+    ShellCommandArgv,
+)
+from nonebot.plugin import PluginMetadata
+from nonebot.rule import ArgumentParser, Rule
+from nonebot.typing import T_State
+
+require("nonebot_plugin_saa")
+require("nonebot_plugin_session")
+
+from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_saa import __plugin_meta__ as saa_plugin_meta
+from nonebot_plugin_session import SessionIdType
+from nonebot_plugin_session import __plugin_meta__ as session_plugin_meta
+from nonebot_plugin_session import extract_session
+
+assert saa_plugin_meta.supported_adapters
+assert session_plugin_meta.supported_adapters
+supported_adapters = (
+    saa_plugin_meta.supported_adapters & session_plugin_meta.supported_adapters
 )
 
-from nonebot.adapters.onebot.v11 import Bot as V11Bot
-from nonebot.adapters.onebot.v11 import Message as V11Msg
-from nonebot.adapters.onebot.v11 import MessageSegment as V11MsgSeg
-from nonebot.adapters.onebot.v11 import MessageEvent as V11MEvent
-from nonebot.adapters.onebot.v11 import GroupMessageEvent as V11GMEvent
-
-from nonebot.adapters.onebot.v12 import Bot as V12Bot
-from nonebot.adapters.onebot.v12 import Message as V12Msg
-from nonebot.adapters.onebot.v12 import MessageSegment as V12MsgSeg
-from nonebot.adapters.onebot.v12 import MessageEvent as V12MEvent
-from nonebot.adapters.onebot.v12 import GroupMessageEvent as V12GMEvent
-from nonebot.adapters.onebot.v12 import ChannelMessageEvent as V12CMEvent
-
+from .data_source import GuessResult, Handle
 from .utils import random_idiom
-from .data_source import Handle, GuessResult
 
 __plugin_meta__ = PluginMetadata(
     name="猜成语",
@@ -50,11 +53,14 @@ __plugin_meta__ = PluginMetadata(
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
         "使用 --strict 选项开启成语检查，即猜测的短语必须是成语，如：@我 猜成语 --strict"
     ),
+    type="application",
+    homepage="https://github.com/noneplugin/nonebot-plugin-handle",
+    supported_adapters=supported_adapters,
     extra={
         "unique_name": "handle",
         "example": "@小Q 猜成语",
         "author": "meetwq <meetwq@gmail.com>",
-        "version": "0.2.0",
+        "version": "0.3.0",
     },
 )
 
@@ -82,33 +88,19 @@ handle = on_shell_command("handle", parser=parser, block=True, priority=13)
 
 @handle.handle()
 async def _(
-    bot: Union[V11Bot, V12Bot],
+    bot: Bot,
     matcher: Matcher,
-    event: Union[V11MEvent, V12MEvent],
+    event: Event,
     argv: List[str] = ShellCommandArgv(),
 ):
     await handle_handle(bot, matcher, event, argv)
 
 
-def get_cid(bot: Union[V11Bot, V12Bot], event: Union[V11MEvent, V12MEvent]):
-    if isinstance(event, V11MEvent):
-        cid = f"{bot.self_id}_{event.sub_type}_"
-    else:
-        cid = f"{bot.self_id}_{event.detail_type}_"
-
-    if isinstance(event, V11GMEvent) or isinstance(event, V12GMEvent):
-        cid += str(event.group_id)
-    elif isinstance(event, V12CMEvent):
-        cid += f"{event.guild_id}_{event.channel_id}"
-    else:
-        cid += str(event.user_id)
-
-    return cid
+def get_cid(bot: Bot, event: Event):
+    return extract_session(bot, event).get_id(SessionIdType.GROUP)
 
 
-def game_running(
-    bot: Union[V11Bot, V12Bot], event: Union[V11MEvent, V12MEvent]
-) -> bool:
+def game_running(bot: Bot, event: Event) -> bool:
     cid = get_cid(bot, event)
     return bool(games.get(cid, None))
 
@@ -133,12 +125,7 @@ def shortcut(cmd: str, argv: List[str] = [], **kwargs):
     command = on_command(cmd, **kwargs, block=True, priority=12)
 
     @command.handle()
-    async def _(
-        bot: Union[V11Bot, V12Bot],
-        matcher: Matcher,
-        event: Union[V11MEvent, V12MEvent],
-        msg: Union[V11Msg, V12Msg] = CommandArg(),
-    ):
+    async def _(bot: Bot, matcher: Matcher, event: Event, msg: Message = CommandArg()):
         try:
             args = shlex.split(msg.extract_plain_text().strip())
         except:
@@ -148,7 +135,7 @@ def shortcut(cmd: str, argv: List[str] = [], **kwargs):
 
 shortcut("猜成语", rule=smart_to_me)
 shortcut("提示", ["--hint"], aliases={"给个提示"}, rule=game_running)
-shortcut("结束", ["--stop"], aliases={"停止游戏", "结束游戏"}, rule=game_running)
+shortcut("结束", ["--stop"], aliases={"结束游戏", "停止游戏"}, rule=game_running)
 
 
 idiom_matcher = on_message(
@@ -158,9 +145,9 @@ idiom_matcher = on_message(
 
 @idiom_matcher.handle()
 async def _(
-    bot: Union[V11Bot, V12Bot],
+    bot: Bot,
     matcher: Matcher,
-    event: Union[V11MEvent, V12MEvent],
+    event: Event,
     state: T_State,
 ):
     idiom: str = state["idiom"]
@@ -189,9 +176,9 @@ def set_timeout(matcher: Matcher, cid: str, timeout: float = 300):
 
 
 async def handle_handle(
-    bot: Union[V11Bot, V12Bot],
+    bot: Bot,
     matcher: Matcher,
-    event: Union[V11MEvent, V12MEvent],
+    event: Event,
     argv: List[str],
 ):
     async def send(
@@ -200,22 +187,15 @@ async def handle_handle(
         if not (message or image):
             await matcher.finish()
 
-        if isinstance(bot, V11Bot):
-            msg = V11Msg()
-            if image:
-                msg.append(V11MsgSeg.image(image))
-        else:
-            msg = V12Msg()
-            if image:
-                resp = await bot.upload_file(
-                    type="data", name="handle", data=image.getvalue()
-                )
-                file_id = resp["file_id"]
-                msg.append(V12MsgSeg.image(file_id))
-
+        msg_builder = MessageFactory([])
+        if image:
+            msg_builder.append(Image(image))
         if message:
-            msg.append(message)
-        await matcher.finish(msg)
+            if image:
+                message = "\n" + message
+            msg_builder.append(message)
+        await msg_builder.send()
+        await matcher.finish()
 
     try:
         args = parser.parse_args(argv)
