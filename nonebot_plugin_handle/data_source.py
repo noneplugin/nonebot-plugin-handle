@@ -79,26 +79,27 @@ class Handle:
         if not char:
             return block
 
-        char_size = self.font_char.getsize(char)
+        char_size = self.font_char.getbbox(char)[2:]
         x = (self.block_size[0] - char_size[0]) / 2
         y = (self.block_size[1] - char_size[1]) / 5 * 3
         draw.text((x, y), char, font=self.font_char, fill=char_color)
 
         space = 5
         need_space = bool(initial and final)
-        py_size = self.font_pinyin.getsize(initial + final)
+        py_length = self.font_pinyin.getlength(initial + final)
         if need_space:
-            py_size = (py_size[0] + space, py_size[1])
-        x = (self.block_size[0] - py_size[0]) / 2
+            py_length += space
+        py_start = (self.block_size[0] - py_length) / 2
+        x = py_start
         y = self.block_size[0] / 8
         draw.text((x, y), initial, font=self.font_pinyin, fill=initial_color)
-        x += self.font_pinyin.getsize(initial)[0]
+        x += self.font_pinyin.getlength(initial)
         if need_space:
             x += space
         draw.text((x, y), final, font=self.font_pinyin, fill=final_color)
 
-        tone_size = self.font_tone.getsize(tone)
-        x = (self.block_size[0] + py_size[0]) / 2 + tone_size[0] / 3
+        tone_size = self.font_tone.getbbox(tone)[2:]
+        x = (self.block_size[0] + py_length) / 2 + tone_size[0] / 3
         y -= tone_size[1] / 3
         draw.text((x, y), tone, font=self.font_tone, fill=tone_color)
 
