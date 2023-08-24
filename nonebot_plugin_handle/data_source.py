@@ -1,6 +1,6 @@
 from enum import Enum
 from io import BytesIO
-from typing import Iterable, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from PIL import Image, ImageDraw
 from PIL.Image import Image as IMG
@@ -68,6 +68,8 @@ class Handle:
         final_color: str = "",
         tone: str = "",
         tone_color: str = "",
+        underline: bool = False,
+        underline_color: str = "",
     ) -> IMG:
         block = Image.new("RGB", self.block_size, self.border_color)
         inner_w = self.block_size[0] - self.border_width * 2
@@ -102,6 +104,14 @@ class Handle:
         x = (self.block_size[0] + py_length) / 2 + tone_size[0] / 3
         y -= tone_size[1] / 3
         draw.text((x, y), tone, font=self.font_tone, fill=tone_color)
+
+        if underline:
+            x = py_start
+            py_size = self.font_pinyin.getbbox(initial + final)[2:]
+            y = self.block_size[0] / 8 + py_size[1] + 2
+            draw.line((x, y, x + py_length, y), fill=underline_color, width=1)
+            y += 3
+            draw.line((x, y, x + py_length, y), fill=underline_color, width=1)
 
         return block
 
@@ -150,6 +160,9 @@ class Handle:
             tone_colors = get_colors(
                 [p[2] for p in pinyin], [p[2] for p in self.pinyin]
             )
+            underline_colors = get_colors(
+                [p[0] + p[1] for p in pinyin], [p[0] + p[1] for p in self.pinyin]
+            )
             for j in range(self.length):
                 char = idiom[j]
                 i2, f2, t2 = pinyin[j]
@@ -158,12 +171,19 @@ class Handle:
                     char_color = (
                         initial_color
                     ) = final_color = tone_color = self.bg_color
+                    underline = False
+                    underline_color = ""
                 else:
                     color = self.bg_color
                     char_color = char_colors[j]
                     initial_color = initial_colors[j]
                     final_color = final_colors[j]
                     tone_color = tone_colors[j]
+                    underline_color = underline_colors[j]
+                    underline = underline_color in (
+                        self.correct_color,
+                        self.exist_color,
+                    )
                 block = self.draw_block(
                     color,
                     char,
@@ -174,6 +194,8 @@ class Handle:
                     final_color,
                     t2,
                     tone_color,
+                    underline,
+                    underline_color,
                 )
                 board.paste(block, block_pos(i, j))
 
