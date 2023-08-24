@@ -114,39 +114,74 @@ class Handle:
         board_size = (board_w, board_h)
         board = Image.new("RGB", board_size, self.bg_color)
 
-        def get_color(char1: str, char2: str, char_list: Iterable[str]) -> str:
-            if char1 == char2:
-                return self.correct_color
-            elif char2 in char_list:
-                return self.exist_color
-            else:
-                return self.wrong_color
-
-        for i in range(rows):
-            idiom = self.guessed_idiom[i] if len(self.guessed_idiom) > i else ""
-            pinyin = self.guessed_pinyin[i] if len(self.guessed_pinyin) > i else []
-            for j in range(self.length):
-                char = idiom[j] if idiom else ""
-                if not char:
-                    block = self.draw_block(self.bg_color)
+        def get_colors(guessed: List[str], answer: List[str]) -> List[str]:
+            colors = []
+            incorrect = []
+            for i in range(self.length):
+                if guessed[i] != answer[i]:
+                    incorrect.append(answer[i])
                 else:
-                    i1, f1, t1 = self.pinyin[j]
-                    i2, f2, t2 = pinyin[j]
-                    if char == self.idiom[j]:
-                        color = self.correct_color
-                        char_c = initial_c = final_c = tone_c = self.bg_color
-                    else:
-                        color = self.bg_color
-                        char_c = get_color(self.idiom[j], char, self.idiom)
-                        initial_c = get_color(i1, i2, [p[0] for p in self.pinyin])
-                        final_c = get_color(f1, f2, [p[1] for p in self.pinyin])
-                        tone_c = get_color(t1, t2, [p[2] for p in self.pinyin])
-                    block = self.draw_block(
-                        color, char, char_c, i2, initial_c, f2, final_c, t2, tone_c
-                    )
-                x = self.padding[0] + (self.block_size[0] + self.block_padding[0]) * j
-                y = self.padding[1] + (self.block_size[1] + self.block_padding[1]) * i
-                board.paste(block, (x, y))
+                    incorrect.append("_")
+            for i in range(self.length):
+                if guessed[i] == answer[i]:
+                    colors.append(self.correct_color)
+                elif guessed[i] in incorrect:
+                    colors.append(self.exist_color)
+                    incorrect[incorrect.index(guessed[i])] = "_"
+                else:
+                    colors.append(self.wrong_color)
+            return colors
+
+        def block_pos(row: int, col: int) -> Tuple[int, int]:
+            x = self.padding[0] + (self.block_size[0] + self.block_padding[0]) * col
+            y = self.padding[1] + (self.block_size[1] + self.block_padding[1]) * row
+            return x, y
+
+        for i in range(rows - 1):
+            idiom = self.guessed_idiom[i]
+            pinyin = self.guessed_pinyin[i]
+            char_colors = get_colors(list(idiom), list(self.idiom))
+            initial_colors = get_colors(
+                [p[0] for p in pinyin], [p[0] for p in self.pinyin]
+            )
+            final_colors = get_colors(
+                [p[1] for p in pinyin], [p[1] for p in self.pinyin]
+            )
+            tone_colors = get_colors(
+                [p[2] for p in pinyin], [p[2] for p in self.pinyin]
+            )
+            for j in range(self.length):
+                char = idiom[j]
+                i2, f2, t2 = pinyin[j]
+                if char == self.idiom[j]:
+                    color = self.correct_color
+                    char_color = (
+                        initial_color
+                    ) = final_color = tone_color = self.bg_color
+                else:
+                    color = self.bg_color
+                    char_color = char_colors[j]
+                    initial_color = initial_colors[j]
+                    final_color = final_colors[j]
+                    tone_color = tone_colors[j]
+                block = self.draw_block(
+                    color,
+                    char,
+                    char_color,
+                    i2,
+                    initial_color,
+                    f2,
+                    final_color,
+                    t2,
+                    tone_color,
+                )
+                board.paste(block, block_pos(i, j))
+
+        i = rows - 1
+        for j in range(self.length):
+            block = self.draw_block(self.bg_color)
+            board.paste(block, block_pos(i, j))
+
         return save_jpg(board)
 
     def draw_hint(self) -> BytesIO:
