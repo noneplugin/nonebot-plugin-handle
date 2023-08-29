@@ -61,7 +61,7 @@ __plugin_meta__ = PluginMetadata(
         "unique_name": "handle",
         "example": "@小Q 猜成语",
         "author": "meetwq <meetwq@gmail.com>",
-        "version": "0.3.2",
+        "version": "0.3.3",
     },
 )
 
