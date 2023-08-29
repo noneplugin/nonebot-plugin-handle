@@ -18,6 +18,21 @@ pip install nonebot_plugin_handle
 ```
 
 
+### 配置项
+
+> 以下配置项可在 `.env.*` 文件中设置，具体参考 [NoneBot 配置方式](https://nonebot.dev/docs/appendices/config)
+
+#### `handle_strict_mode`
+ - 类型：`bool`
+ - 默认：`False`
+ - 说明：是否启用严格模式，开启后猜测的短语必须是成语
+
+#### `handle_color_enhance`
+ - 类型：`bool`
+ - 默认：`False`
+ - 说明：是否启用色彩增强模式
+
+
 ### 使用
 
 **以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空**
@@ -40,17 +55,11 @@ pip install nonebot_plugin_handle
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
 
-使用 --strict 选项开启成语检查，即猜测的短语必须是成语，如：
-
-```
-@机器人 猜成语 --strict
-```
-
 
 或使用 `handle` 指令：
 
 ```
-handle [--hint] [--stop] [--strict] [idiom]
+handle [--hint] [--stop] [idiom]
 ```
 
 
