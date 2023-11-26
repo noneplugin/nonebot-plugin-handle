@@ -181,7 +181,7 @@ class Handle:
             y = self.padding[1] + (self.block_size[1] + self.block_padding[1]) * row
             return x, y
 
-        for i in range(rows - 1):
+        for i in range(len(self.guessed_idiom)):
             idiom = self.guessed_idiom[i]
             pinyin = self.guessed_pinyin[i]
             char_states = get_states(list(idiom), list(self.idiom))
@@ -233,10 +233,10 @@ class Handle:
                 )
                 board.paste(block, block_pos(i, j))
 
-        i = rows - 1
-        for j in range(self.length):
-            block = self.draw_block(self.colors.block_color)
-            board.paste(block, block_pos(i, j))
+        for i in range(len(self.guessed_idiom), rows):
+            for j in range(self.length):
+                block = self.draw_block(self.colors.block_color)
+                board.paste(block, block_pos(i, j))
 
         return save_jpg(board)
 

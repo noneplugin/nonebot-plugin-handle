@@ -9,6 +9,7 @@ from typing import Dict, List, NoReturn, Optional
 from nonebot import on_command, on_message, on_shell_command, require
 from nonebot.adapters import Bot, Event, Message
 from nonebot.exception import ParserExit
+from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import (
     CommandArg,
@@ -120,7 +121,8 @@ def shortcut(cmd: str, argv: List[str] = [], **kwargs):
     async def _(bot: Bot, matcher: Matcher, event: Event, msg: Message = CommandArg()):
         try:
             args = shlex.split(msg.extract_plain_text().strip())
-        except:
+        except Exception as e:
+            logger.warning(f"shlex.split error: {e}")
             args = []
         await handle_handle(bot, matcher, event, argv + args)
 
