@@ -35,15 +35,26 @@ pip install nonebot_plugin_handle
 
 ### 使用
 
-**以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空**
+**以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空，此处省略**
 
 ```
 @机器人 + 猜成语
 ```
 
+或使用 `handle` 指令：
+
+```
+handle [--hint] [--stop] [--verify] [idiom]
+```
+
+
+### 规则
+
 你有十次的机会猜一个四字词语；
 
 每次猜测后，汉字与拼音的颜色将会标识其与正确答案的区别；
+
+汉字的右上角标的数字1、2、3、4分别对应一、二、三、四声；
 
 青色 表示其出现在答案中且在正确的位置；
 
@@ -55,12 +66,12 @@ pip install nonebot_plugin_handle
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
 
-
-或使用 `handle` 指令：
+使用 `--verify` 选项开启成语检查，即猜测的短语必须是成语，如：
 
 ```
-handle [--hint] [--stop] [idiom]
+handle --verify
 ```
+注：`--verify` 仅在 `handle_strict_mode` 设置为 `False` 时生效。
 
 
 ### 示例
@@ -71,19 +82,35 @@ handle [--hint] [--stop] [idiom]
 
 
 ### 说明
+
 橙色块着色规则为：
 
 ```
-橙色块至多着色 此单词中有这个字母的数量 次。
+橙色块至多着色 此成语中有这个元素的数量 次。
+```
+同时其满足：
+
+```
+橙色块着色数量 + 青色块着色数量 <= 此成语中有这个元素的数量。
 ```
 
 类似Wordle，这意味着：
 
-如果答案是 `zu2 bu4 chu1 hu4`。
+**如果答案是 `zu2 bu4 chu1 hu4`。**
 
-玩家猜测 `hu1 xx1 xx1 xx1`(x代表无关)，则 h 标为橙色，1 声在第 3 格标记青色，其他为灰色。
+玩家猜测 `hu1 xx1 xx1 xx1`(x代表无关)，则
 
-玩家猜测 `hu4 hu4 xx4 xx4`，则第 1 个 h 着橙色，第 2 个 h 着灰色。4 声在第 4 格着青色，在第 1 格着橙色，2、3 格着灰色。
+`h` 标为橙色。
+
+`1` 声在第 3 格标记青色，其他为灰色。（因为着青色的数量达到最大值 1）
+
+玩家猜测 `hu4 hu4 su4 su4`，则
+
+第 1 个 `h` 着橙色，第 2 个 `h` 着灰色。（因为着青色的数量达到最大值 1）
+
+`4` 声在第 2、4 格着青色，在第 1、3 格着灰色。（因为着青色的数量达到最大值 2）
+
+四个 `u` 全部标记为青色。
 
 
 ### 特别感谢
