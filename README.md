@@ -44,7 +44,7 @@ pip install nonebot_plugin_handle
 或使用 `handle` 指令：
 
 ```
-handle [--hint] [--stop] [--verify] [idiom]
+handle [--hint] [--stop] [--strict] [idiom]
 ```
 
 
@@ -66,12 +66,12 @@ handle [--hint] [--stop] [--verify] [idiom]
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
 
-使用 `--verify` 选项开启成语检查，即猜测的短语必须是成语，如：
+使用 `--srict` 选项开启成语检查，即猜测的短语必须是成语，如：
 
 ```
-handle --verify
+handle --srict
 ```
-注：`--verify` 仅在 `handle_strict_mode` 设置为 `False` 时生效。
+注：`--srict` 仅在 `handle_strict_mode` 被设置为 `False` 时生效。
 
 
 ### 示例
@@ -83,7 +83,7 @@ handle --verify
 
 ### 说明
 
-橙色块着色规则为：
+#### 橙色块着色规则为：
 
 ```
 橙色块至多着色 此成语中有这个元素的数量 次。
@@ -111,6 +111,23 @@ handle --verify
 `4` 声在第 2、4 格着青色，在第 1、3 格着灰色。（因为着青色的数量达到最大值 2）
 
 四个 `u` 全部标记为青色。
+
+
+#### 特殊标记
+
+在旧版 nonebot-plugin-handle(<0.3.2) 中，若出现连续标黄的拼音，玩家无法判断其是出自同一个字还是不同的字，如下图所示。
+
+![IMG_9223](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/636154aa-3d14-4af2-8121-6189aca9dfc7)
+
+> 更新后，若所猜拼音下，出现双下划线，则代表该声母/韵母是出自同一个出现在答案中的字。
+
+这张图片的含义是：成语中出现了 xin 这个拼音的字，但位置不正确。
+
+![IMG_9221](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/fff051c5-ce86-45fe-aa9a-1d923ede4c70)
+
+这张图片的含义是：成语中，所猜位置是 xin1，但不是新这个字。（正确答案是心）
+
+![IMG_9222](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/ba3d74b3-cfe6-40e7-b88f-b5062cf87d19)
 
 
 ### 特别感谢
