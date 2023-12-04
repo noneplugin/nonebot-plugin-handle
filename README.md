@@ -66,12 +66,12 @@ handle [--hint] [--stop] [--strict] [idiom]
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
 
-使用 `--srict` 选项开启成语检查，即猜测的短语必须是成语，如：
+使用 `--strict` 选项开启成语检查，即猜测的短语必须是成语，如：
 
 ```
-handle --srict
+handle --strict
 ```
-注：`--srict` 仅在 `handle_strict_mode` 被设置为 `False` 时生效。
+注：`--strict` 仅在 `handle_strict_mode` 被设置为 `False` 时生效。
 
 
 ### 示例

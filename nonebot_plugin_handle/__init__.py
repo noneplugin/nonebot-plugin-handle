@@ -44,7 +44,7 @@ __plugin_meta__ = PluginMetadata(
         "每个格子的 汉字、声母、韵母、声调 都会独立进行颜色的指示。\n"
         "当四个格子都为青色时，你便赢得了游戏！\n"
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
-        "使用 --srict 选项开启非默认的成语检查，即猜测的短语必须是成语，如：@我 猜成语 --srict"
+        "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，如：@我 猜成语 --strict"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
@@ -65,7 +65,7 @@ parser = ArgumentParser("handle", description="猜成语")
 parser.add_argument("--hint", action="store_true", help="提示")
 parser.add_argument("--stop", action="store_true", help="结束游戏")
 parser.add_argument("idiom", nargs="?", type=str, default="", help="成语")
-parser.add_argument("--srict", action="store_true", help="验证模式，即判断所发送短语是否为成语")
+parser.add_argument("--strict", action="store_true", help="验证模式，即判断所发送短语是否为成语")
 
 
 @dataclass
@@ -73,7 +73,7 @@ class Options:
     hint: bool = False
     stop: bool = False
     idiom: str = ""
-    srict: bool = False
+    strict: bool = False
 
 
 games: Dict[str, Handle] = {}
@@ -205,7 +205,7 @@ async def handle_handle(
 
     cid = get_cid(bot, event)
     if not games.get(cid, None):
-        is_strict = handle_config.handle_strict_mode if handle_config.handle_strict_mode else options.srict
+        is_strict = handle_config.handle_strict_mode if handle_config.handle_strict_mode else options.strict
         game = Handle(*random_idiom(), strict=is_strict)
         games[cid] = game
         set_timeout(matcher, cid)
