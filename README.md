@@ -117,17 +117,17 @@ handle --strict
 
 在旧版 nonebot-plugin-handle(<0.3.2) 中，若出现连续标黄的拼音，玩家无法判断其是出自同一个字还是不同的字，如下图所示。
 
-![IMG_9223](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/636154aa-3d14-4af2-8121-6189aca9dfc7)
+![image.png](https://s2.loli.net/2023/12/04/NOydSPkYQAh3HDV.png)
 
 > 更新后，若所猜拼音下，出现双下划线，则代表该声母/韵母是出自同一个出现在答案中的字。
 
 这张图片的含义是：成语中出现了 xin 这个拼音的字，但位置不正确。
 
-![IMG_9221](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/fff051c5-ce86-45fe-aa9a-1d923ede4c70)
+![image.png](https://s2.loli.net/2023/12/04/wDuFtoGST9byMZp.png)
 
 这张图片的含义是：成语中，所猜位置是 xin1，但不是新这个字。（正确答案是心）
 
-![IMG_9222](https://github.com/Sevenyine/nonebot-plugin-handle/assets/65720409/ba3d74b3-cfe6-40e7-b88f-b5062cf87d19)
+![image.png](https://s2.loli.net/2023/12/04/VcrwlLaS3ht9uj7.png)
 
 
 ### 特别感谢
