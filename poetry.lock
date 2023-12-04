@@ -270,13 +270,13 @@ strenum = ">=0.4.8,<0.5.0"
 
 [[package]]
 name = "nonebot-plugin-session"
-version = "0.2.2"
+version = "0.2.3"
 description = "Nonebot2 会话信息提取与会话id定义"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "nonebot_plugin_session-0.2.2-py3-none-any.whl", hash = "sha256:136944f25761fc289cb6598b52e3a37dc5408239fb9314292f73e69a80f216e2"},
-    {file = "nonebot_plugin_session-0.2.2.tar.gz", hash = "sha256:c131b3ec6bf9d877e9e312483e97e84c3711528fd10e058aba4f3ec7df21e68a"},
+    {file = "nonebot_plugin_session-0.2.3-py3-none-any.whl", hash = "sha256:5f652a0c082231c1cea72deb994a81e50f77ba532e14d30fdec09772f69079fd"},
+    {file = "nonebot_plugin_session-0.2.3.tar.gz", hash = "sha256:33af37400f5005927c4ff861e593774bedc314fba00cfe06f482e582d9f447b7"},
 ]
 
 [package.dependencies]

@@ -56,7 +56,7 @@ __plugin_meta__ = PluginMetadata(
         "unique_name": "handle",
         "example": "@小Q 猜成语",
         "author": "meetwq <meetwq@gmail.com>",
-        "version": "0.3.4",
+        "version": "0.3.6",
     },
 )
 
@@ -205,7 +205,7 @@ async def handle_handle(
 
     cid = get_cid(bot, event)
     if not games.get(cid, None):
-        is_strict = handle_config.handle_strict_mode if handle_config.handle_strict_mode else options.strict
+        is_strict = handle_config.handle_strict_mode or options.strict
         game = Handle(*random_idiom(), strict=is_strict)
         games[cid] = game
         set_timeout(matcher, cid)
