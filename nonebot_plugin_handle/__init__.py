@@ -43,7 +43,8 @@ __plugin_meta__ = PluginMetadata(
         "橙色 表示其出现在答案中但不在正确的位置；\n"
         "每个格子的 汉字、声母、韵母、声调 都会独立进行颜色的指示。\n"
         "当四个格子都为青色时，你便赢得了游戏！\n"
-        "可发送“结束”结束游戏；可发送“提示”查看提示。"
+        "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
+        "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，如：@我 猜成语 --strict"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
@@ -64,6 +65,7 @@ parser = ArgumentParser("handle", description="猜成语")
 parser.add_argument("--hint", action="store_true", help="提示")
 parser.add_argument("--stop", action="store_true", help="结束游戏")
 parser.add_argument("idiom", nargs="?", type=str, default="", help="成语")
+parser.add_argument("--strict", action="store_true", help="验证模式，即判断所发送短语是否为成语")
 
 
 @dataclass
@@ -71,6 +73,7 @@ class Options:
     hint: bool = False
     stop: bool = False
     idiom: str = ""
+    strict: bool = False
 
 
 games: Dict[str, Handle] = {}
@@ -152,7 +155,7 @@ async def stop_game(matcher: Matcher, cid: str):
     timers.pop(cid, None)
     if games.get(cid, None):
         game = games.pop(cid)
-        msg = "猜成语超时，游戏结束"
+        msg = "猜成语超时，游戏结束。"
         if len(game.guessed_idiom) >= 1:
             msg += f"\n{game.result}"
         await matcher.finish(msg)
@@ -202,10 +205,14 @@ async def handle_handle(
 
     cid = get_cid(bot, event)
     if not games.get(cid, None):
-        game = Handle(*random_idiom(), strict=handle_config.handle_strict_mode)
+        is_strict = handle_config.handle_strict_mode if handle_config.handle_strict_mode else options.strict
+        game = Handle(*random_idiom(), strict=is_strict)
         games[cid] = game
         set_timeout(matcher, cid)
-        await send(f"你有{game.times}次机会猜一个四字成语，请发送成语", game.draw())
+        if is_strict:
+            await send(f"你有{game.times}次机会猜一个四字成语，发送有效成语以参与游戏。", game.draw())
+        else:
+            await send(f"你有{game.times}次机会猜一个四字成语，发送任意四字词语以参与游戏。", game.draw())
 
     if options.stop:
         game = games.pop(cid)
