@@ -30,11 +30,16 @@ def random_idiom() -> Tuple[str, str]:
 
 # fmt: off
 # 声母
-INITIALS = ["zh", "z", "y", "x", "w", "t", "sh", "s", "r", "q", "p", "n", "m", "l", "k", "j", "h", "g", "f", "d", "ch", "c", "b"]
+INITIALS = [
+    "zh", "z", "y", "x", "w", "t", "sh", "s", "r", "q", "p",
+    "n", "m", "l", "k", "j", "h", "g", "f", "d", "ch", "c", "b"
+]
 # 韵母
 FINALS = [
-    "ün", "üe", "üan", "ü", "uo", "un", "ui", "ue", "uang", "uan", "uai", "ua", "ou", "iu", "iong", "ong", "io", "ing",
-    "in", "ie", "iao", "iang", "ian", "ia", "er", "eng", "en", "ei", "ao", "ang", "an", "ai", "u", "o", "i", "e", "a"
+    "ün", "üe", "üan", "ü", "uo", "un", "ui", "ue", "uang",
+    "uan", "uai","ua", "ou", "iu", "iong", "ong", "io", "ing",
+    "in", "ie", "iao", "iang", "ian", "ia", "er", "eng", "en",
+    "ei", "ao", "ang", "an", "ai", "u", "o", "i", "e", "a"
 ]
 # fmt: on
 

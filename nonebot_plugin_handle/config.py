@@ -1,10 +1,10 @@
-from nonebot import get_driver
-from pydantic import BaseModel, Extra
+from nonebot import get_plugin_config
+from pydantic import BaseModel
 
 
-class Config(BaseModel, extra=Extra.ignore):
+class Config(BaseModel):
     handle_strict_mode: bool = False
     handle_color_enhance: bool = False
 
 
-handle_config = Config.parse_obj(get_driver().config.dict())
+handle_config = get_plugin_config(Config)

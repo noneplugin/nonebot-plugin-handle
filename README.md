@@ -38,13 +38,7 @@ pip install nonebot_plugin_handle
 **以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空，此处省略**
 
 ```
-@机器人 + 猜成语
-```
-
-或使用 `handle` 指令：
-
-```
-handle [--hint] [--stop] [--strict] [idiom]
+@机器人 + 猜成语/handle
 ```
 
 
