@@ -21,6 +21,7 @@ from nonebot.params import (
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.rule import ArgumentParser, Rule
 from nonebot.typing import T_State
+from nonebot.utils import run_sync
 
 require("nonebot_plugin_saa")
 require("nonebot_plugin_session")
@@ -209,10 +210,9 @@ async def handle_handle(
         game = Handle(*random_idiom(), strict=is_strict)
         games[cid] = game
         set_timeout(matcher, cid)
-        if is_strict:
-            await send(f"你有{game.times}次机会猜一个四字成语，发送有效成语以参与游戏。", game.draw())
-        else:
-            await send(f"你有{game.times}次机会猜一个四字成语，发送任意四字词语以参与游戏。", game.draw())
+        msg = f"你有{game.times}次机会猜一个四字成语，"
+        msg += "发送有效成语以参与游戏。" if is_strict else "发送任意四字词语以参与游戏。"
+        await send(msg, await run_sync(game.draw)())
 
     if options.stop:
         game = games.pop(cid)
@@ -225,7 +225,7 @@ async def handle_handle(
     set_timeout(matcher, cid)
 
     if options.hint:
-        await send(image=game.draw_hint())
+        await send(image=await run_sync(game.draw_hint)())
 
     idiom = options.idiom
     if not match_idiom(idiom):
@@ -237,11 +237,11 @@ async def handle_handle(
         await send(
             ("恭喜你猜出了成语！" if result == GuessResult.WIN else "很遗憾，没有人猜出来呢")
             + f"\n{game.result}",
-            game.draw(),
+            await run_sync(game.draw)(),
         )
     elif result == GuessResult.DUPLICATE:
         await send("你已经猜过这个成语了呢")
     elif result == GuessResult.ILLEGAL:
         await send(f"你确定“{idiom}”是个成语吗？")
     else:
-        await send(image=game.draw())
+        await send(image=await run_sync(game.draw)())
