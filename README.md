@@ -38,14 +38,13 @@ pip install nonebot_plugin_handle
 **以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空，此处省略**
 
 ```
-猜成语/handle [--stop] [--strict]
+[@Bot] 猜成语/handle
 ```
 
 ```
-结束/结束猜成语/结束游戏
+[@Bot] 结束/结束猜成语/结束游戏
 ```
 
-注意，上述命令可能会与`wordle`插件冲突。建议使用`结束猜成语`或`handle --stop`
 
 ### 规则
 
@@ -68,7 +67,7 @@ pip install nonebot_plugin_handle
 使用 `--strict` 选项开启成语检查，即猜测的短语必须是成语，如：
 
 ```
-handle --strict
+[@Bot] handle --strict
 ```
 注：`--strict` 仅在 `handle_strict_mode` 被设置为 `False` 时生效。
 
