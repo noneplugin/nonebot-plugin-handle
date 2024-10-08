@@ -38,9 +38,14 @@ pip install nonebot_plugin_handle
 **以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空，此处省略**
 
 ```
-@机器人 + 猜成语/handle
+猜成语/handle [--stop] [--strict]
 ```
 
+```
+结束/结束猜成语/结束游戏
+```
+
+注意，上述命令可能会与`wordle`插件冲突。建议使用`结束猜成语`或`handle --stop`
 
 ### 规则
 

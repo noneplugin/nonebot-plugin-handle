@@ -6,7 +6,6 @@ from nonebot import on_regex, require
 from nonebot.matcher import Matcher
 from nonebot.params import RegexDict
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
-from nonebot.rule import to_me
 from nonebot.utils import run_sync
 from typing_extensions import Annotated
 
@@ -43,7 +42,7 @@ __plugin_meta__ = PluginMetadata(
         "当四个格子都为青色时，你便赢得了游戏！\n"
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
         "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，\n"
-        "如：@我 猜成语 --strict"
+        "如：猜成语 --strict"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
@@ -52,7 +51,7 @@ __plugin_meta__ = PluginMetadata(
         "nonebot_plugin_alconna", "nonebot_plugin_session"
     ),
     extra={
-        "example": "@小Q 猜成语",
+        "example": "猜成语",
     },
 )
 
@@ -72,9 +71,12 @@ def game_not_running(user_id: UserId) -> bool:
 
 
 handle = on_alconna(
-    Alconna("handle", Option("-s|--strict", default=False, action=store_true)),
+    Alconna(
+        "handle",
+        Option("-s|--strict", default=False, action=store_true),
+        Option("--stop", default=False, action=store_true),
+    ),
     aliases=("猜成语",),
-    rule=to_me() & game_not_running,
     use_cmd_start=True,
     block=True,
     priority=13,
@@ -133,7 +135,22 @@ async def _(
     matcher: Matcher,
     user_id: UserId,
     strict: Query[bool] = AlconnaQuery("strict.value", False),
+    stop: Query[bool] = AlconnaQuery("stop.value", False),
 ):
+    if stop.result:
+        if user_id in games:
+            game = games[user_id]
+            stop_game(user_id)
+            msg = "游戏已结束"
+            if len(game.guessed_idiom) >= 1:
+                msg += f"\n{game.result}"
+            await matcher.finish(msg)
+        else:
+            await matcher.finish("当前没有进行中的游戏。")
+
+    if user_id in games:
+        await matcher.finish("游戏已经在进行了，发送“结束”结束游戏。")
+
     is_strict = handle_config.handle_strict_mode or strict.result
     idiom, explanation = random_idiom()
     game = Handle(idiom, explanation, strict=is_strict)
