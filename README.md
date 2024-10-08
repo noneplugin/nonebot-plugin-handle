@@ -45,6 +45,7 @@ pip install nonebot_plugin_handle
 [@Bot] 结束/结束猜成语/结束游戏
 ```
 
+
 ### 规则
 
 你有十次的机会猜一个四字词语；

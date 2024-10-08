@@ -44,7 +44,7 @@ __plugin_meta__ = PluginMetadata(
         "当四个格子都为青色时，你便赢得了游戏！\n"
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
         "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，\n"
-        "如：@我 猜成语 --strict"
+        "如：猜成语 --strict"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
@@ -53,7 +53,7 @@ __plugin_meta__ = PluginMetadata(
         "nonebot_plugin_alconna", "nonebot_plugin_session"
     ),
     extra={
-        "example": "@小Q 猜成语",
+        "example": "猜成语",
     },
 )
 
