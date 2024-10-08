@@ -3,10 +3,10 @@ from asyncio import TimerHandle
 from typing import Any, Dict
 
 from nonebot import on_regex, require
+from nonebot.log import logger
 from nonebot.matcher import Matcher
-from nonebot.params import RegexDict
+from nonebot.params import RegexDict, EventToMe
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
-from nonebot.rule import to_me
 from nonebot.utils import run_sync
 from typing_extensions import Annotated
 
@@ -14,6 +14,7 @@ require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
 
 from nonebot_plugin_alconna import (
+    AlcMatches,
     Alconna,
     AlconnaQuery,
     Image,
@@ -70,23 +71,27 @@ def game_is_running(user_id: UserId) -> bool:
 def game_not_running(user_id: UserId) -> bool:
     return user_id not in games
 
+handle_alc = Alconna(
+    "handle",
+    Option("-s|--strict", default=False, action=store_true),
+)
 
-handle = on_alconna(
-    Alconna("handle", Option("-s|--strict", default=False, action=store_true)),
+matcher_handle = on_alconna(
+    handle_alc,
     aliases=("猜成语",),
-    rule=to_me() & game_not_running,
+    rule=game_not_running,
     use_cmd_start=True,
     block=True,
     priority=13,
 )
-handle_hint = on_alconna(
+matcher_hint = on_alconna(
     "提示",
     rule=game_is_running,
     use_cmd_start=True,
     block=True,
     priority=13,
 )
-handle_stop = on_alconna(
+matcher_stop = on_alconna(
     "结束",
     aliases=("结束游戏", "结束猜成语"),
     rule=game_is_running,
@@ -94,7 +99,7 @@ handle_stop = on_alconna(
     block=True,
     priority=13,
 )
-handle_idiom = on_regex(
+matcher_idiom = on_regex(
     r"^(?P<idiom>[\u4e00-\u9fa5]{4})$",
     rule=game_is_running,
     block=True,
@@ -128,12 +133,22 @@ def set_timeout(matcher: Matcher, user_id: str, timeout: float = 300):
     timers[user_id] = timer
 
 
-@handle.handle()
+@matcher_handle.handle()
 async def _(
     matcher: Matcher,
     user_id: UserId,
+    alc_matches: AlcMatches,
     strict: Query[bool] = AlconnaQuery("strict.value", False),
+    to_me: bool = EventToMe(),
 ):
+    
+    header_match = str(alc_matches.header_match.result)
+    command = str(handle_alc.command)
+    if not (to_me or bool(header_match.rstrip(command))):
+        logger.debug("Not to me, ignore")
+        matcher.block = False
+        await matcher.finish()
+
     is_strict = handle_config.handle_strict_mode or strict.result
     idiom, explanation = random_idiom()
     game = Handle(idiom, explanation, strict=is_strict)
@@ -148,7 +163,7 @@ async def _(
     await msg.send()
 
 
-@handle_hint.handle()
+@matcher_hint.handle()
 async def _(matcher: Matcher, user_id: UserId):
     game = games[user_id]
     set_timeout(matcher, user_id)
@@ -156,7 +171,7 @@ async def _(matcher: Matcher, user_id: UserId):
     await UniMessage.image(raw=await run_sync(game.draw_hint)()).send()
 
 
-@handle_stop.handle()
+@matcher_stop.handle()
 async def _(matcher: Matcher, user_id: UserId):
     game = games[user_id]
     stop_game(user_id)
@@ -167,7 +182,7 @@ async def _(matcher: Matcher, user_id: UserId):
     await matcher.finish(msg)
 
 
-@handle_idiom.handle()
+@matcher_idiom.handle()
 async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDict()):
     game = games[user_id]
     set_timeout(matcher, user_id)
