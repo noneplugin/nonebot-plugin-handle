@@ -93,7 +93,7 @@ matcher_hint = on_alconna(
 )
 matcher_stop = on_alconna(
     "结束",
-    aliases=("结束游戏", "结束猜成语"),
+    aliases=("结束游戏", "结束猜成语", "stop", "stophandle"),
     rule=game_is_running,
     use_cmd_start=True,
     block=True,
