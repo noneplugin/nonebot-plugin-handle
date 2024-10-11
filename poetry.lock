@@ -251,19 +251,19 @@ nonebot2 = ">=2.3.0"
 tarina = ">=0.5.5"
 
 [[package]]
-name = "nonebot-plugin-session"
-version = "0.3.2"
-description = "Nonebot2 会话信息提取与会话id定义"
+name = "nonebot-plugin-uninfo"
+version = "0.4.1"
+description = "Universal Information Model for Nonebot2"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = ">=3.9"
 files = [
-    {file = "nonebot_plugin_session-0.3.2-py3-none-any.whl", hash = "sha256:785e74ff656e46d84c4dbbac125f9a9adebcc4b9ff7db700527e6e47d47aabd6"},
-    {file = "nonebot_plugin_session-0.3.2.tar.gz", hash = "sha256:da0dabe9108151052a6e83d9923068d2ec43a93810ad37b264ed65aee2c69f93"},
+    {file = "nonebot_plugin_uninfo-0.4.1-py3-none-any.whl", hash = "sha256:2075874a540f27cb650ff5e64482324121c39e4374b850df323482744910beac"},
+    {file = "nonebot_plugin_uninfo-0.4.1.tar.gz", hash = "sha256:8c36d62684029d813dd01acd2cc759f07163923b8274935250dcd3e9293ef560"},
 ]
 
 [package.dependencies]
-nonebot2 = ">=2.3.0,<3.0.0"
-strenum = ">=0.4.15,<0.5.0"
+importlib-metadata = ">=4.13.0"
+nonebot2 = ">=2.3.0"
 
 [[package]]
 name = "nonebot-plugin-waiter"
@@ -675,22 +675,6 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
-name = "strenum"
-version = "0.4.15"
-description = "An Enum that inherits from str."
-optional = false
-python-versions = "*"
-files = [
-    {file = "StrEnum-0.4.15-py3-none-any.whl", hash = "sha256:a30cda4af7cc6b5bf52c8055bc4bf4b2b6b14a93b574626da33df53cf7740659"},
-    {file = "StrEnum-0.4.15.tar.gz", hash = "sha256:878fb5ab705442070e4dd1929bb5e2249511c0bcf2b0eeacf3bcd80875c82eff"},
-]
-
-[package.extras]
-docs = ["myst-parser[linkify]", "sphinx", "sphinx-rtd-theme"]
-release = ["twine"]
-test = ["pylint", "pytest", "pytest-black", "pytest-cov", "pytest-pylint"]
-
-[[package]]
 name = "tarina"
 version = "0.5.8"
 description = "A collection of common utils for Arclet"
@@ -916,4 +900,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "90807a3142d623432d7b43da29cebbc04868efb033e31e95553c1e5863686da7"
+content-hash = "dc0e7ea763fe344cccf54c975963ccde13dbffe19025e9f04c58023f0e708d5b"
