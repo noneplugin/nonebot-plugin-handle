@@ -2,7 +2,6 @@ import json
 import random
 from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 from PIL import ImageFont
 from PIL.Image import Image as IMG
@@ -21,9 +20,9 @@ def legal_idiom(word: str) -> bool:
         return word in (idiom.strip() for idiom in f.readlines())
 
 
-def random_idiom() -> Tuple[str, str]:
+def random_idiom() -> tuple[str, str]:
     with answer_path.open("r", encoding="utf-8") as f:
-        answers: List[Dict[str, str]] = json.load(f)
+        answers: list[dict[str, str]] = json.load(f)
         answer = random.choice(answers)
         return answer["word"], answer["explanation"]
 
@@ -44,7 +43,7 @@ FINALS = [
 # fmt: on
 
 
-def get_pinyin(idiom: str) -> List[Tuple[str, str, str]]:
+def get_pinyin(idiom: str) -> list[tuple[str, str, str]]:
     pys = pinyin(idiom, style=Style.TONE3, v_to_u=True)
     results = []
     for p in pys:

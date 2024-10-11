@@ -1,6 +1,6 @@
 import asyncio
 from asyncio import TimerHandle
-from typing import Any, Dict
+from typing import Annotated, Any
 
 from nonebot import on_regex, require
 from nonebot.log import logger
@@ -8,7 +8,6 @@ from nonebot.matcher import Matcher
 from nonebot.params import EventToMe, RegexDict
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.utils import run_sync
-from typing_extensions import Annotated
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
@@ -58,8 +57,8 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-games: Dict[str, Handle] = {}
-timers: Dict[str, TimerHandle] = {}
+games: dict[str, Handle] = {}
+timers: dict[str, TimerHandle] = {}
 
 UserId = Annotated[str, SessionId(SessionIdType.GROUP)]
 
@@ -183,7 +182,7 @@ async def _(matcher: Matcher, user_id: UserId):
 
 
 @matcher_idiom.handle()
-async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDict()):
+async def _(matcher: Matcher, user_id: UserId, matched: dict[str, Any] = RegexDict()):
     game = games[user_id]
     set_timeout(matcher, user_id)
 

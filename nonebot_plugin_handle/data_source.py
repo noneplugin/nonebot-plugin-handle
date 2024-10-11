@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from PIL import Image, ImageDraw
 from PIL.Image import Image as IMG
@@ -48,11 +48,11 @@ class Handle:
         self.explanation: str = explanation  # 释义
         self.strict: bool = strict  # 是否判断输入词语为成语
         self.result = f"【成语】：{idiom}\n【释义】：{explanation}"
-        self.pinyin: List[Tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
+        self.pinyin: list[tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
         self.length = 4
         self.times: int = 10  # 可猜次数
-        self.guessed_idiom: List[str] = []  # 记录已猜成语
-        self.guessed_pinyin: List[List[Tuple[str, str, str]]] = []  # 记录已猜成语的拼音
+        self.guessed_idiom: list[str] = []  # 记录已猜成语
+        self.guessed_pinyin: list[list[tuple[str, str, str]]] = []  # 记录已猜成语的拼音
 
         self.block_size = (160, 160)  # 文字块尺寸
         self.block_padding = (20, 20)  # 文字块之间间距
@@ -142,7 +142,7 @@ class Handle:
         board_size = (board_w, board_h)
         board = Image.new("RGB", board_size, self.colors.bg_color)
 
-        def get_states(guessed: List[str], answer: List[str]) -> List[GuessState]:
+        def get_states(guessed: list[str], answer: list[str]) -> list[GuessState]:
             states = []
             incorrect = []
             for i in range(self.length):
@@ -176,7 +176,7 @@ class Handle:
             else:
                 return self.colors.wrong_color_char
 
-        def block_pos(row: int, col: int) -> Tuple[int, int]:
+        def block_pos(row: int, col: int) -> tuple[int, int]:
             x = self.padding[0] + (self.block_size[0] + self.block_padding[0]) * col
             y = self.padding[1] + (self.block_size[1] + self.block_padding[1]) * row
             return x, y
@@ -202,9 +202,9 @@ class Handle:
                 i2, f2, t2 = pinyin[j]
                 if char == self.idiom[j]:
                     block_color = self.colors.correct_color
-                    char_color = (
-                        initial_color
-                    ) = final_color = tone_color = self.colors.bg_color
+                    char_color = initial_color = final_color = tone_color = (
+                        self.colors.bg_color
+                    )
                     underline = False
                     underline_color = ""
                 else:
