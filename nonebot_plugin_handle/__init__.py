@@ -5,7 +5,7 @@ from typing import Any, Dict
 from nonebot import on_regex, require
 from nonebot.log import logger
 from nonebot.matcher import Matcher
-from nonebot.params import RegexDict, EventToMe
+from nonebot.params import EventToMe, RegexDict
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.utils import run_sync
 from typing_extensions import Annotated
@@ -71,6 +71,7 @@ def game_is_running(user_id: UserId) -> bool:
 def game_not_running(user_id: UserId) -> bool:
     return user_id not in games
 
+
 handle_alc = Alconna(
     "handle",
     Option("-s|--strict", default=False, action=store_true),
@@ -93,7 +94,7 @@ matcher_hint = on_alconna(
 )
 matcher_stop = on_alconna(
     "结束",
-    aliases=("结束游戏", "结束猜成语", "stop", "stophandle"),
+    aliases=("结束游戏", "结束猜成语", "stophandle"),
     rule=game_is_running,
     use_cmd_start=True,
     block=True,
@@ -141,7 +142,6 @@ async def _(
     strict: Query[bool] = AlconnaQuery("strict.value", False),
     to_me: bool = EventToMe(),
 ):
-    
     header_match = str(alc_matches.header_match.result)
     command = str(handle_alc.command)
     if not (to_me or bool(header_match.rstrip(command))):
