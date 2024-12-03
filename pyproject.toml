@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_handle"
-version = "0.4.2"
+version = "0.4.3"
 description = "Nonebot2 汉字Wordle 插件"
 authors = ["meetwq <meetwq@gmail.com>"]
 license = "MIT"
