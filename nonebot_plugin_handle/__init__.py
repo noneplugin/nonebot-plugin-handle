@@ -16,6 +16,7 @@ from nonebot_plugin_alconna import (
     AlcMatches,
     Alconna,
     AlconnaQuery,
+    At,
     Image,
     Option,
     Query,
@@ -184,7 +185,12 @@ async def _(matcher: Matcher, user_id: UserId):
 
 
 @matcher_idiom.handle()
-async def _(matcher: Matcher, user_id: UserId, matched: dict[str, Any] = RegexDict()):
+async def _(
+    matcher: Matcher,
+    uninfo: Uninfo,
+    user_id: UserId,
+    matched: dict[str, Any] = RegexDict(),
+):
     game = games[user_id]
     set_timeout(matcher, user_id)
 
@@ -193,15 +199,23 @@ async def _(matcher: Matcher, user_id: UserId, matched: dict[str, Any] = RegexDi
 
     if result in [GuessResult.WIN, GuessResult.LOSS]:
         stop_game(user_id)
-        msg = Text(
-            (
-                "恭喜你猜出了成语！"
-                if result == GuessResult.WIN
-                else "很遗憾，没有人猜出来呢"
+
+        await (
+            UniMessage.template(
+                (
+                    "恭喜{user}猜出了成语！"
+                    if result == GuessResult.WIN
+                    else "很遗憾，没有人猜出来呢"
+                )
+                + "\n{result}\n{image}"
             )
-            + f"\n{game.result}"
-        ) + Image(raw=await run_sync(game.draw)())
-        await msg.send()
+            .format(
+                user="你" if uninfo.scene.is_private else At("user", uninfo.user.id),
+                result=game.result,
+                image=Image(raw=await run_sync(game.draw)()),
+            )
+            .send()
+        )
 
     elif result == GuessResult.DUPLICATE:
         await matcher.finish("你已经猜过这个成语了呢")
