@@ -1,6 +1,6 @@
 # nonebot-plugin-handle
 
-适用于 [Nonebot2](https://github.com/nonebot/nonebot2) 的 汉字Wordle 猜成语插件
+适用于 [Nonebot2](https://github.com/nonebot/nonebot2) 的 汉字 Wordle 猜成语插件
 
 
 ### 安装
@@ -32,19 +32,53 @@ pip install nonebot_plugin_handle
  - 默认：`False`
  - 说明：是否启用色彩增强模式
 
+#### `handle_superuser_get_answer`
+ - 类型：`bool`
+ - 默认：`False`
+ - 说明：是否允许超级用户执行获取答案命令
+
+#### `handle_require_tome`
+ - 类型：`bool`
+ - 默认：`False`
+ - 说明：玩家是否需要@机器人（或在私聊）中才可触发游戏，该配置仅控制游戏启动
 
 ### 使用
 
 **以下命令需要加[命令前缀](https://nonebot.dev/docs/appendices/config#command-start-和-command-separator) (默认为`/`)，可自行设置为空，此处省略**
 
 ```
-[@Bot] 猜成语/handle
+[@Bot] 猜成语/handle [-s|--strict] [-d|--difficult]
+```
+例如：
+```
+猜成语 -s -d
 ```
 
 ```
 [@Bot] 结束/结束猜成语/结束游戏
 ```
 
+**超管命令**
+
+```
+[@Bot] 更正拼音 <成语> <拼音1> <拼音2> <拼音3> <拼音4>
+```
+例如：
+```
+更正拼音 了然于胸 liao3 ran2 yv2 xiong1
+```
+
+```
+[@Bot] 新成语 <成语> [-e|--explanation <释义>] [-d|--difficult]
+```
+例如：
+```
+新成语 恪尽职守 -e 坚守自己的岗位，负责认真地工作。
+```
+
+```
+[@Bot] 成语答案
+```
 
 ### 规则
 
@@ -64,12 +98,14 @@ pip install nonebot_plugin_handle
 
 可发送“结束”结束游戏；可发送“提示”查看提示。
 
-使用 `--strict` 选项开启成语检查，即猜测的短语必须是成语，如：
+使用 `--strict` | `-s` 选项开启成语检查，即猜测的短语必须是成语，如：
 
 ```
 [@Bot] handle --strict
 ```
 注：`--strict` 仅在 `handle_strict_mode` 被设置为 `False` 时生效。
+
+使用 `--difficult` | `-d` 选项启用完整词库，该词库包含大量生僻成语。
 
 
 ### 示例
